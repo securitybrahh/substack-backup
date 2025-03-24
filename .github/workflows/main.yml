@@ -22,6 +22,3 @@ jobs:
           SUBSTACK_URL: ${{ secrets.substackUrl }}
           SUBSTACK_EMAIL: ${{ secrets.substackEmail }}
           SUBSTACK_PASSWORD: ${{ secrets.substackPassword }}
-          AWS_BUCKET_NAME: ${{ secrets.awsBucketName }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.awsAccessKeyId }}
-          AWS_ACCESS_KEY_SECRET: ${{ secrets.awsAccessKeySecret }}

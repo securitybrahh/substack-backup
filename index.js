@@ -4,12 +4,6 @@ const config = {
   backupFolder: "backups"
 };
 
-const AWS = require("aws-sdk");
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET
-});
-
 const fs = require("fs");
 const glob = require("glob");
 const puppeteer = require("puppeteer");
@@ -71,33 +65,11 @@ const generateExport = async () => {
   await browser.close();
 };
 
-const uploadToS3 = async filename => {
-  try {
-    const fileContent = fs.readFileSync(filename);
-
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `${config.backupFolder}/${filename}`,
-      Body: fileContent
-    };
-
-    const data = await s3.upload(params).promise();
-    console.log(`Successfully backed up Substack data to S3: ${data.Location}`);
-  } catch (err) {
-    console.error("Something went wrong while uploading to S3");
-    console.error(err);
-  }
-};
 
 const main = async function() {
   await generateExport();
   const files = glob.sync("*.csv");
   const filename = files[0];
-  if (!filename) {
-    throw new Error("Couldn't find a file to upload, aborting");
-  }
-  console.log(`Uploading ${filename} to S3`);
-  await uploadToS3(filename);
 };
 
 main();
