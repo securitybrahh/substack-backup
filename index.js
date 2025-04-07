@@ -82,12 +82,35 @@ const generateExport = async () => {
   await browser.close();
 };
 
+const uploadToBucket = async filename => {
+   try {
+     const fileContent = fs.readFileSync(filename);
+ 
+     const params = {
+       Bucket: process.env.BUCKET_NAME,
+       Key: `${config.backupFolder}/${filename}`,
+       Body: fileContent
+     };
+ 
+     const data = await BUCKET.upload(params).promise();
+     console.log(`Successfully backed up Substack data to ${data.Location}`);
+   } catch (err) {
+     console.error("Something went wrong while uploading");
+     console.error(err);
+   }
+ };
+
 
 const main = async function() {
   await generateExport();
   const files = glob.sync("*.csv");
   const Zipfile = glob.sync("*.zip");
   const filename = files[0];
+  if (!filename) {
+    throw new Error("Couldn't find a file to upload, aborting");
+  }
+  console.log(`Uploading ${filename} to Bucket`);
+  await uploadToBucket(filename);
 };
 
 main();
