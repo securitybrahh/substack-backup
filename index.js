@@ -53,6 +53,23 @@ const generateExport = async () => {
 
     await page.waitFor(10000);
 
+    // Find the Settings button using XPath
+    let button = await page.$x("//*[@id="publish-home"]/div[1]/div/div[1]/div[2]/div/div[1]/div[8]/a/span");
+    await button.click();
+
+    
+    // launch export creation button using XPath
+    let button = await page.$x("//*[@id="import-export-settings"]/div/div[3]/div[3]/button");
+    await button.click();
+
+    // Wait for export to get ready
+    await page.waitFor(60000);
+
+
+    // Click download
+    let button = await page.$x("//*[@id="import-export-settings"]/div/div[3]/table/tr[2]/td[2]/button");
+    await button.click();
+
     console.log("Done!")
 
     await page.screenshot({ path: "success.png" });
@@ -69,6 +86,7 @@ const generateExport = async () => {
 const main = async function() {
   await generateExport();
   const files = glob.sync("*.csv");
+  const Zipfile = glob.sync("*.zip");
   const filename = files[0];
 };
 
